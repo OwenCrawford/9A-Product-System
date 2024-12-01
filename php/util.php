@@ -1,13 +1,23 @@
 <?php
    
-  //print a nice table from a query result
   function PrintTable(PDOStatement $result, array $colnames = [], 
+    Bool $sortable = false, String $pageadr = "", String $tablename = "t", 
+    String $sortcol = "", String $sortdir = "ASC", array $sortablecols = [],
+    String $selectlbl = "", String $selectvar = "", String $selectpage = "") {
+
+      echo BuildTable($result, $colnames, $sortable, $pageadr, $tablename,
+          $sortcol, $sortdir, $sortablecols, $selectlbl, $selectvar, $selectpage);
+
+    }
+
+  //print a nice table from a query result
+  function BuildTable(PDOStatement $result, array $colnames = [], 
       Bool $sortable = false, String $pageadr = "", String $tablename = "t", 
       String $sortcol = "", String $sortdir = "ASC", array $sortablecols = [],
       String $selectlbl = "", String $selectvar = "", String $selectpage = "") {
     
     //column headers
-    echo "<table border=1> <tr>";
+    $tablestr = "<table border=1> <tr>";
     $selectcol = -1;
     for($c = 0; $c < $result->columnCount(); $c++) {
       $colname = $result->getColumnMeta($c)["name"];
@@ -35,33 +45,75 @@
         } else {
           $colstr = $coldisp;
         }
-        echo "<th>$colstr</th>";
+        $tablestr .= "<th>$colstr</th>";
       } else {
         $selectcol = $c;
       }
     }
     if($selectlbl != "") {
-      echo "<th></th>";
+      $tablestr .= "<th></th>";
     }
-    echo "</tr>";
+    $tablestr .= "</tr>";
     
     
     //read each row
     for($r = 0; $r < $result->rowCount(); $r++) {
       $row = $result->fetch();
-      echo "<tr>";
+      $tablestr .= "<tr>";
       for($c = 0; $c < $result->columnCount(); $c++) {
         if($c != $selectcol)
-          echo "<td>$row[$c]</td>";
+        $tablestr .= "<td>$row[$c]</td>";
       }
       if($selectlbl != "" && $selectcol >= 0) {
-        echo "<td><a href=\"" . $selectpage . "?" . GetToString([$tablename . "_choice"]) 
-            . $tablename . "_choice=" . $row[$selectvar]
+        $tablestr .= "<td><a href=\"" . $selectpage . "?";
+        if($selectpage = "")
+           $tablestr .= GetToString([$tablename . "_choice"]) ;
+        $tablestr .= $tablename . "_choice=" . $row[$selectvar]
             . "\">" . $selectlbl . "</a></td>";
       }
-      echo "</tr>";
+      $tablestr .= "</tr>";
     } 
-    echo "</table>";
+    $tablestr .= "</table>";
+
+    return $tablestr;
+  }
+
+  function BuildTableFromArray(array $array, array $colnames) {
+    $tablestr = "<table border=1> <tr>";
+    for($c = 0; $c < count($array[0]); $c++) {
+      $colname = "NO_NAME";
+      if(count($colnames) > $c) {
+        $colname = $colnames[$c];
+      } 
+      $tablestr .= "<th>$$colname</th>";
+    }
+    $tablestr .= "</tr>";
+
+    for($r = 0; $r < count($array); $r++) {
+      $tablestr .= "<tr>";
+      for($c = 0; $c < count($array[$r]); $c++) {
+        $tablestr .= "<td>$row[$c]</td>";
+      }
+      $tablestr .= "</tr>";
+    } 
+    $tablestr .= "</table>";
+    $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S*.jpg)~", 
+        "<img src=\"$1$2\" alt=\"\\2\" >",
+        $tablestr);
+    
+  }
+
+  function MergePartDetails(PDOStatement $result, array $partinfo) {
+    $merged = [];
+    for($r = 0; $r < $result->rowCount(); $r++) {
+      $row = $result->fetch();
+      $row[] = $partinfo["description"];
+      $row[] = $partinfo["price"];
+      $row[] = $partinfo["weight"];
+      $row[] = $partinfo["pictureURL"];
+      $merged[] = $row;
+    }
+    return $merged;
   }
   
   
@@ -116,5 +168,6 @@
     
     return $getstr;
   }
+
   
 ?>
