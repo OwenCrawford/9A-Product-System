@@ -66,7 +66,7 @@
       }
       if($selectlbl != "" && $selectcol >= 0) {
         $tablestr .= "<td><a href=\"" . $selectpage . "?";
-        if($selectpage = "")
+        if($selectpage == "") 
            $tablestr .= GetToString([$tablename . "_choice"]) ;
         $tablestr .= $tablename . "_choice=" . $row[$selectvar]
             . "\">" . $selectlbl . "</a></td>";
@@ -80,19 +80,27 @@
 
   function BuildTableFromArray(array $array, array $colnames) {
     $tablestr = "<table border=1> <tr>";
-    for($c = 0; $c < count($array[0]); $c++) {
+    //$a = array_values($array);
+    //$array = $a;
+
+    if(count($array) > 0)
+      $cols = count($array[0]);
+    else
+      $cols = 0;
+
+    for($c = 0; $c < $cols; $c++) {
       $colname = "NO_NAME";
       if(count($colnames) > $c) {
         $colname = $colnames[$c];
       } 
-      $tablestr .= "<th>$$colname</th>";
+      $tablestr .= "<th>$colname</th>";
     }
     $tablestr .= "</tr>";
 
     for($r = 0; $r < count($array); $r++) {
       $tablestr .= "<tr>";
-      for($c = 0; $c < count($array[$r]); $c++) {
-        $tablestr .= "<td>$row[$c]</td>";
+      for($c = 0; $c < $cols; $c++) {
+        $tablestr .= "<td>" . $array[$r][$c] . "</td>";
       }
       $tablestr .= "</tr>";
     } 
@@ -101,17 +109,28 @@
         "<img src=\"$1$2\" alt=\"\\2\" >",
         $tablestr);
     
+    return $tablestr;
+    
+  }
+
+  function MatchFirstElement(array $arr, $val) {
+    foreach($arr as $r) {
+      if(count($r) > 0 && $r[0] == $val)
+        return $r;
+    }
+    return false;
   }
 
   function MergePartDetails(PDOStatement $result, array $partinfo) {
     $merged = [];
     for($r = 0; $r < $result->rowCount(); $r++) {
-      $row = $result->fetch();
-      $row[] = $partinfo["description"];
-      $row[] = $partinfo["price"];
-      $row[] = $partinfo["weight"];
-      $row[] = $partinfo["pictureURL"];
-      $merged[] = $row;
+      $row = $result->fetch(PDO::FETCH_NUM);
+      $partrow = MatchFirstElement($partinfo, $row[0]);
+      $row[] = $partrow["description"];
+      $row[] = $partrow["price"];
+      $row[] = $partrow["weight"];
+      $row[] = $partrow["pictureURL"];
+      $merged[] = array_values($row);
     }
     return $merged;
   }

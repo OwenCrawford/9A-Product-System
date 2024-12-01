@@ -20,11 +20,21 @@ CREATE TABLE Inventory (
     quantity INT
 );
 
+CREATE TABLE Customers (
+    custID INT PRIMARY KEY AUTO_INCREMENT,
+    custName CHAR(40),
+    email CHAR(40),
+    custAddress CHAR(60)
+)
+
 CREATE TABLE Orders (
     orderNum INT PRIMARY KEY AUTO_INCREMENT,
     timePlaced TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status CHAR(10),
-    totalPrice DECIMAL(9,2)
+    totalPrice DECIMAL(9,2),
+    customerID INT,
+
+    FOREIGN KEY(customerID) REFERENCES Customer(custID)
 );
 
 CREATE TABLE OrderParts (
@@ -41,14 +51,20 @@ CREATE TABLE ShippingCharges (
     charge DECIMAL(4,2)
 );
 
+
+
 INSERT INTO Inventory VALUES(1, 11);
 INSERT INTO Inventory VALUES(2, 22);
 INSERT INTO Inventory VALUES(3, 33);
 INSERT INTO Inventory VALUES(4, 44);
 
-INSERT INTO Orders VALUES(1, DEFAULT, "placed", 111.11);
-INSERT INTO Orders VALUES(2, DEFAULT, "authorized", 222.22);
-INSERT INTO Orders VALUES(3, DEFAULT, "shipped", 333.33);
+INSERT INTO Customers VALUES(1, "Susan", "susan@gmail.com", "123 Main St, Dekalb, Illinois" );
+INSERT INTO Customers VALUES(2, "Bob", "bob@gmail.com", "321 First St, Chicago, Illinois" );
+INSERT INTO Customers VALUES(3, "RealGuy McLastname", "rgmln@aol.com", "404 Old Town Rd, Anchorage, Alaska" );
+
+INSERT INTO Orders VALUES(1, DEFAULT, "placed", 111.11, 1);
+INSERT INTO Orders VALUES(2, DEFAULT, "authorized", 222.22, 2);
+INSERT INTO Orders VALUES(3, DEFAULT, "shipped", 333.33, 3);
 
 INSERT INTO OrderParts VALUES(1, 1, 1);
 INSERT INTO OrderParts VALUES(1, 2, 2);

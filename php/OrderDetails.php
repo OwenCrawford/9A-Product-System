@@ -31,7 +31,9 @@
             }
         ?>
 
-        <a href="OrderList.php">Back</a>
+        <form method="POST" action="OrderList.php">
+            <input type="submit" value="Back" class="button button1">
+        </form>
 
         <p>
         <h3>Order Details:</h3>
@@ -45,12 +47,13 @@
             
             $invresult = $invpdo->query(OrderPartsListQuery($orderNum));
             $partnums = $invresult->fetchAll(PDO::FETCH_COLUMN, 0);
-            $legresult = $partdbo->query(PartDetailQuery($partnums));
+            $legresult = $partpdo->query(PartDetailQuery($partnums));
             $partInfo = $legresult->fetchAll();
             $invresult = $invpdo->query(OrderDetailQuery($orderNum));
 
-            $orderdetail = MergePartDetails($invresult,$partinfo);
-            echo BuildTableFromString($orderdetail, 
+            $orderdetail = MergePartDetails($invresult,$partInfo);
+            //var_dump( $orderdetail);
+            echo BuildTableFromArray($orderdetail, 
                 ["Part Number", "Quantity", "Description", "Price", "Weight", "Image"]);
 
 

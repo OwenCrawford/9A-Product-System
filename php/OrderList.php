@@ -19,6 +19,10 @@
     <body>
         <h1>Welcome, Administrator!</h1>
 
+        <form method="POST" action="Admin.php">
+            <input type="submit" value="Back" class="button button1">
+        </form>
+
         <?php
             //initialize database connection
             try {
