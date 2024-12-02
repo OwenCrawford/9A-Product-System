@@ -1,6 +1,7 @@
 DROP TABLE Inventory;
 DROP TABLE OrderParts;
 DROP TABLE Orders;
+DROP TABLE Customers;
 DROP TABLE ShippingCharges;
 
 /*

@@ -37,4 +37,10 @@
                 charge = " . $upd[2]
             . "WHERE bracketName = \"" . $upd[0] . "\";";
     }
+
+    function CustomerInfoQuery($orderNum) {
+        return "SELECT custID,custName,email,custAddress FROM Orders 
+            JOIN Customers ON Orders.customerID = Customers.custID
+            WHERE Orders.orderNum = " . $ordernum . ";";
+    }
 ?>
