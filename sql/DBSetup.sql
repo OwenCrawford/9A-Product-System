@@ -26,7 +26,7 @@ CREATE TABLE Customers (
     custName CHAR(40),
     email CHAR(40),
     custAddress CHAR(60)
-)
+);
 
 CREATE TABLE Orders (
     orderNum INT PRIMARY KEY AUTO_INCREMENT,
@@ -35,7 +35,7 @@ CREATE TABLE Orders (
     totalPrice DECIMAL(9,2),
     customerID INT,
 
-    FOREIGN KEY(customerID) REFERENCES Customer(custID)
+    FOREIGN KEY(customerID) REFERENCES Customers(custID)
 );
 
 CREATE TABLE OrderParts (

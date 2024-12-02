@@ -58,7 +58,7 @@
      
         ?>
         </p>
-        <p style="text-align:left">
+        <p>
             <h3>Invoice:</h3>
         <?php
             $subtotal = 0;
@@ -66,35 +66,35 @@
             foreach($orderdetail as $part) {
                 $subtotal += ($part[1] * $part[3]);
                 $weight += ($part[1] * $part[4]);
-                echo $part[2] . "(x" . $part[1] . "): " . ($part[1] * $part[3]) . "<sp>";
+                echo $part[2] . "(x" . $part[1] . "): " . ($part[1] * $part[3]) . "<br>";
             }
-            echo "Subtotal: " . $subtotal . "<sp>";
+            echo "Subtotal: " . $subtotal . "<br>";
             $invresult = $invpdo->query(ShippingChargeQuery());
             $shipping = 0.00;
-            for($r = 0; $r < $result->rowCount(); $r++) {
-                $row = $result->fetch(PDO::FETCH_NUM);
+            for($r = 0; $r < $invresult->rowCount(); $r++) {
+                $row = $invresult->fetch(PDO::FETCH_NUM);
                 if($shipping == 0 && $weight < $row[1]) {
                     $shipping = $row[2];
                 }
             }
-            echo "Shipping: " . $shipping . "<sp>";
+            echo "Shipping: " . $shipping . "<br>";
             $total = $subtotal + $shipping;
-            echo "Total: " . $total . "<sp>";
+            echo "Total: " . $total . "<br>";
         ?>
         </p>
-        <p style="text-align:left">
+        <p>
             <h3>Shipping Label:</h3>
         <?php
             $invresult = $invpdo->query(CustomerInfoQuery($orderNum));
             $custinfo = $invresult->fetch(PDO::FETCH_NUM);
-            echo $custinfo[1] . "<sp>";
-            echo $custinfo[3] . "<sp>";
-            echo "Confirmation will be sent to: " . $custinfo[2] . "<sp>";
+            echo $custinfo[1] . "<br>";
+            echo $custinfo[3] . "<br>";
+            echo "Confirmation will be sent to: " . $custinfo[2] . "<br>";
         ?>
         </p>
         <p>
             <form method="POST" action="Packer.php">
-                <input type="hidden" id="ordreNum" name="orderNum" value=<?php echo $orderNum; ?>>
+                <input type="hidden" id="orderNum" name="orderNum" value=<?php echo $orderNum; ?>>
                 <input type="submit" name="selection" value="Fill Order">
                 <input type="submit" name="selection" value="Cancel">
             </form>

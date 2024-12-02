@@ -5,6 +5,17 @@
             ORDER BY $sortcol $sortdir;";
     }
 
+    function OrderPackingListQuery($sortcol, $sortdir) {
+        return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
+            WHERE status = \"authorized\"
+            ORDER BY $sortcol $sortdir;";
+    }
+
+    function UpdateOrderStatusQuery($orderNum, $status) {
+        return "UPDATE Orders SET status = \"" . $status 
+            . "\" WHERE orderNum = " . $orderNum . ";";
+    }
+
     function PartListQuery($sortcol, $sortdir) {
         return "SELECT parts.number,description,price,weight,pictureURL FROM parts
             ORDER BY $sortcol $sortdir;";
@@ -41,6 +52,6 @@
     function CustomerInfoQuery($orderNum) {
         return "SELECT custID,custName,email,custAddress FROM Orders 
             JOIN Customers ON Orders.customerID = Customers.custID
-            WHERE Orders.orderNum = " . $ordernum . ";";
+            WHERE Orders.orderNum = " . $orderNum . ";";
     }
 ?>
