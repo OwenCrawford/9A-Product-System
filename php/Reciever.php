@@ -80,10 +80,10 @@
                         $result = $invpdo->query(UpdatePartQuery($num, $qty, $new));
                         if($add > 0)
                             echo "<p style=\"background-color:green;\">Added " 
-                                . $qty . " of part #" . $num . ".</p>";
+                                . $add . " of part #" . $num . ".</p>";
                         else
                             echo "<p style=\"background-color:green;\">Removed " 
-                                . $qty . " of part #" . $num . ".</p>";
+                                . $add . " of part #" . $num . ".</p>";
                     }
                 }
             }
