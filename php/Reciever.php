@@ -23,7 +23,7 @@
             //initialize database connection
             try {
                 $pdo = new PDO($legacydbDsn, $legacydbUser, $legacydbPass);
-                echo "Connected to database!<br>";
+                //echo "Connected to database!<br>";
             }
             catch(PDOexception $e) {
                 echo "Could not connect to database: " . $e->getMessage() . "<br>"; 
@@ -32,16 +32,26 @@
 
         <p>
         <h3>Part List:</h3>
+
+        <form method="POST" action="Reciever.php">
+            <label for="searchstr">Search part number or description:</label>
+            <input type="text" id="searchstr" name="searchstr"
+            <?php if(key_exists("searchstr", $_POST))
+                    echo "value=\"" . $_POST["searchstr"] . "\""; ?> >
+            <input type="submit" value="Search">
+        </form><br>
+
         <?php
             $sortdir = "ASC";
             $sortcol = "number";
+            $searchstr = "";
+            if(key_exists("searchstr", $_POST))
+                $searchstr = $_POST["searchstr"];
             //GetSortParams("parts", $sortcol, $sortdir);
             //var_dump($_POST);     
-            $result = $pdo->query(PartListQuery($sortcol,$sortdir));
+            $result = $pdo->query(PartListSearchQuery($sortcol,$sortdir,$searchstr));
             $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "URL"),
-                false, "", "parts", 
-                "", "", [], 
-                "", "", "",
+                false, "", "parts", "", "", [], "", "", "",
                 true, "number", "Enter Quantity:" );
             
             $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S*.jpg)~", 

@@ -21,6 +21,16 @@
             ORDER BY $sortcol $sortdir;";
     }
 
+    function PartListSearchQuery($sortcol, $sortdir, $searchstr) {
+        if($searchstr == "")
+            return PartListQuery($sortcol, $sortdir);
+
+        $searchstr = strtolower($searchstr);
+        return "SELECT number,description,price,weight,pictureURL FROM parts
+            WHERE number = '$searchstr' OR LOWER(description) LIKE '%$searchstr%'
+            ORDER BY $sortcol $sortdir;";
+    }
+
     function OrderPartsListQuery($orderNum) {
         return "SELECT partNum FROM OrderParts
             WHERE orderNum = $orderNum;";
