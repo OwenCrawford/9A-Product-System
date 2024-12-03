@@ -31,6 +31,23 @@
             ORDER BY $sortcol $sortdir;";
     }
 
+    function InventoryListQuery($partNum = -1) {
+        if($partNum >= 0)
+            return "SELECT * FROM Inventory WHERE partNum = $partNum;";
+        else
+            return "SELECT * FROM Inventory;";
+    }
+
+    function UpdatePartQuery($partNum, $quantity, Bool $new = false) {
+        if($quantity == 0) 
+            return "REMOVE FROM Inventory WHERE partnum = $partNum;";
+        else if($new)
+            return "INSERT INTO Inventory VALUES($partNum, $quantity);";
+        else
+            return "UPDATE Inventory SET quantity = $quantity
+                        WHERE partNum = '$partNum';";
+    }
+
     function OrderPartsListQuery($orderNum) {
         return "SELECT partNum FROM OrderParts
             WHERE orderNum = $orderNum;";

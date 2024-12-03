@@ -204,5 +204,13 @@
     return $getstr;
   }
 
+  function FlattenArray(array $arr) {
+    $newarr = [];
+    foreach($arr as $e) {
+      $newarr[$e[0]] = $e[1];
+    }
+    return $newarr;
+  }
+
   
 ?>
