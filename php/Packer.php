@@ -29,7 +29,7 @@
                 echo "Could not connect to database: " . $e->getMessage() . "<br>"; 
             }
 
-            if ($_SERVER["REQUEST_METHOD"] == "POST" && key_exists("selection",$_POST) ) {
+            if ($_SERVER["REQUEST_METHOD"] == "POST" && key_exists("selection",$_POST) && $_POST["selection"] == "Fill Order") {
                 $result = $invpdo->query(UpdateOrderStatusQuery($_POST["orderNum"], "shipped"));
                 echo "<p style=\"background-color:green;\">Order #" . $_POST["orderNum"] . " status updated.</p>";
             }
