@@ -14,7 +14,9 @@
   function BuildTable(PDOStatement $result, array $colnames = [], 
       Bool $sortable = false, String $pageadr = "", String $tablename = "t", 
       String $sortcol = "", String $sortdir = "ASC", array $sortablecols = [],
-      String $selectlbl = "", String $selectvar = "", String $selectpage = "") {
+      String $selectlbl = "", String $selectvar = "", String $selectpage = "",
+      Bool $numentry = false, String $entryvar = "", String $entrylbl = "", 
+      Array $maxnums = []) {
     
     //column headers
     $tablestr = "<table border=1> <tr>";
@@ -50,6 +52,9 @@
         $selectcol = $c;
       }
     }
+    if($numentry && $entryvar != "") {
+      $tablestr .= "<th>" . $entrylbl . "</th>";
+    }
     if($selectlbl != "") {
       $tablestr .= "<th></th>";
     }
@@ -64,6 +69,17 @@
         if($c != $selectcol)
         $tablestr .= "<td>$row[$c]</td>";
       }
+
+      if($numentry && $entryvar != "") {
+        $tablestr .= "<td><input type=\"number\" name=\"" 
+          . $entryvar . "_" . $row[$entryvar] 
+          . "\" value=\"0\" step=\"1\" min=\"0\"";
+        if(count($maxnums) > $r) {
+          $tablestr .= " max=\"" . $maxnums[$r] . "\"";
+        }
+        $tablestr .= "></td>";
+      }
+
       if($selectlbl != "" && $selectcol >= 0) {
         $tablestr .= "<td><a href=\"" . $selectpage . "?";
         if($selectpage == "") 
