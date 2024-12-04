@@ -51,12 +51,12 @@
             //GetSortParams("parts", $sortcol, $sortdir);
             //var_dump($_POST);     
             $result = $legpdo->query(PartListSearchQuery($sortcol,$sortdir,$searchstr));
-            $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "URL"),
+            $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "Image"),
                 false, "", "parts", "", "", [], "", "", "",
                 true, "number", "Enter Quantity:" );
             
-            $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S*.jpg)~", 
-                "<img src=\"$1$2\" alt=\"\\2\" >",
+            $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S+?.jpg)~", 
+                "<img src=\"\\1\\2\" alt=\"\\2\">",
                 $tablestr);
         ?>
 
