@@ -16,7 +16,8 @@
       String $sortcol = "", String $sortdir = "ASC", array $sortablecols = [],
       String $selectlbl = "", String $selectvar = "", String $selectpage = "",
       Bool $numentry = false, String $entryvar = "", String $entrylbl = "", 
-      Array $maxnums = []) {
+      Array $maxnums = [], &$price=null, &$weight=null, &$qtylist=null, $qty = false) {
+
     
     //column headers
     $tablestr = "<table border=1> <tr>";
@@ -52,6 +53,9 @@
         $selectcol = $c;
       }
     }
+    if ($qtylist != "") {
+      $tablestr .= "<th>Quantity</th>";
+    }
     if($numentry && $entryvar != "") {
       $tablestr .= "<th>" . $entrylbl . "</th>";
     }
@@ -68,6 +72,10 @@
       for($c = 0; $c < $result->columnCount(); $c++) {
         if($c != $selectcol)
         $tablestr .= "<td>$row[$c]</td>";
+      }
+      if (!is_null($price) && !is_null($weight)) {
+        $price += $row[2]*$qtylist[$r+1];
+        $weight += $row[3]*$qtylist[$r+1];
       }
 
       if($numentry && $entryvar != "") {
@@ -87,8 +95,12 @@
         $tablestr .= $tablename . "_choice=" . $row[$selectvar]
             . "\">" . $selectlbl . "</a></td>";
       }
+      if($qty) {
+        $tablestr .= "<td>".$qtylist[$r+1]."</td>";  
+      }
       $tablestr .= "</tr>";
-    } 
+    }
+    
     $tablestr .= "</table>";
 
     return $tablestr;

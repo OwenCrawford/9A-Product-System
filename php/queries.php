@@ -31,6 +31,11 @@
             ORDER BY $sortcol $sortdir;";
     }
 
+    function PartListNumericalSearchQuery($sortcol, $sortdir, array $searchnumlist) {
+        return "SELECT number,description,price,weight,pictureURL FROM parts
+            WHERE number IN (" . implode(',', $searchnumlist) . ") ORDER BY $sortcol $sortdir;";
+    }
+
     function InventoryListQuery($partNum = -1) {
         if($partNum >= 0)
             return "SELECT * FROM Inventory WHERE partNum = $partNum;";
@@ -69,6 +74,9 @@
         return "SELECT * FROM ShippingCharges ORDER BY weightCutoff;";
     }
 
+    function ShippingChargeByWeightQuery($weight) {
+        return "SELECT charge FROM ShippingCharges WHERE weightCutoff;";
+    }
     function UpdateShippingQuery(array $upd) {
         return "UPDATE ShippingCharges 
             SET weightCutoff = " . $upd[1] . ", 

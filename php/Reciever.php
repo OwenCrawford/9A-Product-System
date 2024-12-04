@@ -51,6 +51,7 @@
             //GetSortParams("parts", $sortcol, $sortdir);
             //var_dump($_POST);     
             $result = $legpdo->query(PartListSearchQuery($sortcol,$sortdir,$searchstr));
+
             $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "Image"),
                 false, "", "parts", "", "", [], "", "", "",
                 true, "number", "Enter Quantity:" );
@@ -80,6 +81,7 @@
                         $result = $invpdo->query(UpdatePartQuery($num, $qty, $new));
                         if($add > 0)
                             echo "<p style=\"background-color:green;\">Added " 
+
                                 . $add . " of part #" . $num . ".</p>";
                         else
                             echo "<p style=\"background-color:green;\">Removed " 
