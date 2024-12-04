@@ -17,6 +17,7 @@
       String $selectlbl = "", String $selectvar = "", String $selectpage = "",
       Bool $numentry = false, String $entryvar = "", String $entrylbl = "", 
       Array $maxnums = [], &$price=null, &$weight=null, &$qtylist=null, $qty = false) {
+
     
     //column headers
     $tablestr = "<table border=1> <tr>";

@@ -36,7 +36,6 @@
             WHERE number IN (" . implode(',', $searchnumlist) . ") ORDER BY $sortcol $sortdir;";
     }
 
-
     function InventoryListQuery($partNum = -1) {
         if($partNum >= 0)
             return "SELECT * FROM Inventory WHERE partNum = $partNum;";
