@@ -21,10 +21,10 @@
         <h2>You have <?php echo $n?> item<?php if ($n!=1) {echo "s";}?> in your cart</h2>
         <?php displayParts($numlist, $qtylist, $price, $weight, $fee, $total); ?>
         <h2>Billing Information:</h2>
-        <h3>Amount: $<?php echo $price?></h3>
-        <h3>Weight: <?php echo $weight?> lbs</h3>
+        <h3>Amount: $<?php echo number_format($price,2)?></h3>
+        <h3>Weight: <?php echo number_format($weight,2)?> lbs</h3>
         <h3>Shipping and Handling: $<?php echo $fee?></h3>
-        <h3>Total: $<?php echo $total?></h3>
+        <h3>Total: $<?php echo number_format($total,2)?></h3>
         <form method="post" action="ConfirmOrder.php">
             <label for="Name">Name:</label>
             <input type="text" name="Name" required /></p>
