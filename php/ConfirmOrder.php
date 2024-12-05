@@ -62,7 +62,7 @@
                 //new customer
                 $invresult = $invpdo->query(AddCustomerQuery($_POST["Name"], $_POST["Email"], $_POST["Address"]));
                 $custID = $invpdo->lastInsertID();
-                $resuinvresultlt->closeCursor();
+                $invresult->closeCursor();
             }
             $invresult = $invpdo->query(AddOrderQuery('authorized', $_POST["Amount"], $custID));
             $orderID = $invpdo->lastInsertID();
