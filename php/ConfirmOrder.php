@@ -63,7 +63,7 @@
         ?>
     <?php 
         if (!array_key_exists('errors', $result)) {
-          echo "<h3>Total Price: " . $_POST["Amount"]."</h3>";
+          echo "<h3>Total Price: $" . $_POST["Amount"]."</h3>";
           echo "<h3>Name: ". $_POST["Name"] ."</h3>";
           echo "<h3>Email: ". $_POST["Email"]."</h3>";
           echo "<h3>Auth: ". $result["authorization"]."</h3>";
