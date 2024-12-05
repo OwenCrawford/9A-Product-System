@@ -37,7 +37,7 @@
                 pattern="(\d{4}[ -]?){4}" 
                 title="XXXX XXXX XXXX XXXX" required /></p>
             <label for="ExpDate">Exp. Date:</label>
-            <input type="month" name="ExpDate" pattern="^\d\d/\d\d\d\d$" title="MM/YYYY" required /></p>
+            <input type="text" name="ExpDate" pattern="^\d\d/\d\d\d\d$" title="MM/YYYY" required /></p>
             <input type="submit" name="Purchase" value="Purchase" />
             <input type="hidden" name="Amount" value=<?php echo $total ?> />
             <?php 
