@@ -33,20 +33,11 @@
             <label for="Address">Address:</label>
             <input type="text" name="Address" required /></p>
             <label for="CC">Credit Card Number:</label>
-            <input type="text" name="CC" 
-                pattern="(\d{4}[ -]?){4}" 
-                title="XXXX XXXX XXXX XXXX" required /></p>
+            <input type="text" name="CC" required /></p>
             <label for="ExpDate">Exp. Date:</label>
-            <input type="month" name="ExpDate" pattern="^\d\d/\d\d\d\d$" title="MM/YYYY" required /></p>
+            <input type="month" name="ExpDate" required /></p>
             <input type="submit" name="Purchase" value="Purchase" />
             <input type="hidden" name="Amount" value=<?php echo $total ?> />
-            <?php 
-                for($p = 0; $p < count($numlist); $p++) {
-                    echo "<input type='hidden' name='part_" 
-                        . $numlist[$p] . "_qty' value='" 
-                        . $qtylist[$p] . "'/>";
-                }
-            ?>
         </form>
 <?php 
     function calculatePartInfo(&$numlist, &$qtylist, &$n) {
@@ -55,7 +46,7 @@
             if(preg_match("~number_\d+~", $k) && $_POST[$k] != 0) {
                 $num = preg_replace("~number_(\d+)~", "\\1", $k);
                 array_push($numlist, $num);
-                $qtylist[$n] = $_POST[$k];
+                $qtylist[$n+1] = $_POST[$k];
                 $n++;
             }
         }
@@ -106,7 +97,7 @@
         }
         $total = $fee + $price;
 
-
+        
     }
 ?>
     </body>

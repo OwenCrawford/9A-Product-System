@@ -12,22 +12,15 @@
 
             // Include helper functions and login info
             include "util.php";
-            include "dblogin.php";
-            include "queries.php";
         ?>
     </head>
 
     <body>
         <?php
-        try {
-            $invpdo = new PDO($invdbDsn, $invdbUser, $invdbPass);
-        } catch(PDOexception $e) {
-            echo "Could not connect to database: " . $e->getMessage() . "<br>"; 
-        }
-
         $url = 'http://blitz.cs.niu.edu/CreditCard/';
         $expdate = $_POST["ExpDate"];
-        //$expdate = DateTime::createFromFormat("Y-m", $expdate)->format("m/Y");
+        //Converts from YYYY-mm to mm/YYYY
+        $expdate = DateTime::createFromFormat("Y-m", $expdate)->format("m/Y");
         $data = array(
             'vendor' => 'VE001-03',
             'trans' => generateRandomString(),
@@ -53,26 +46,7 @@
         if (array_key_exists('errors', $result)) {
             echo "<h2>Error confirming your order: ".$result["errors"][0]."</h1>";
         } else {
-            $invresult = $invpdo->query(CustomerSearchQuery($_POST["Name"], $_POST["Email"], $_POST["Address"]));
-            if($invresult->rowCount() > 0) {
-                //existing customer
-                $custID = ($invresult->fetch(PDO::FETCH_NUM))[0];
-                $invresult->closeCursor();
-            } else {
-                //new customer
-                $invresult = $invpdo->query(AddCustomerQuery($_POST["Name"], $_POST["Email"], $_POST["Address"]));
-                $custID = $invpdo->lastInsertID();
-                $invresult->closeCursor();
-            }
-            $invresult = $invpdo->query(AddOrderQuery('authorized', $_POST["Amount"], $custID));
-            $orderID = $invpdo->lastInsertID();
-            $invresult->closeCursor();
-
-            $partCounts = getPartCounts();
-            $invresult = $invpdo->query(AddOrderPartsQuery($orderID, $partCounts));
-
-            echo "<h2>Order successfully completed. Thank you for shopping at Bob's Auto Parts!</h2>";
-            echo "<h3>Your order is #$orderID</h3>";
+            echo "<h2>Order successfully completed. Thank you for shopping at Bob's Auto Parts!";
         }
         
 
@@ -87,30 +61,14 @@
 
             return $randomString;
         }
-
-        function getPartCounts() {
-            $partCounts = [];
-            $keys = array_keys($_POST);
-            foreach($keys as $k) {
-                if(preg_match("~^part_(\d+)_qty$~", $k) && $_POST[$k] != 0) {
-                    $num = preg_replace("~^part_(\d+)_qty$~", "\\1", $k);
-                    $qty = $_POST[$k];
-                    $partCounts[] = [$num, $qty];
-                }
-            }
-            return $partCounts;
-        }
         ?>
-
     <?php 
-    
         if (!array_key_exists('errors', $result)) {
-          echo "<h3>Total Price: $" . $_POST["Amount"]."</h3>";
+          echo "<h3>Total Price: " . $_POST["Amount"]."</h3>";
           echo "<h3>Name: ". $_POST["Name"] ."</h3>";
           echo "<h3>Email: ". $_POST["Email"]."</h3>";
           echo "<h3>Auth: ". $result["authorization"]."</h3>";
         }
-    
     ?>
     <form method='POST' action='Customer.php'>
         <input type="submit" name="Back" value="Back To Customer Page" />

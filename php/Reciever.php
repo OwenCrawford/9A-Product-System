@@ -51,13 +51,12 @@
             //GetSortParams("parts", $sortcol, $sortdir);
             //var_dump($_POST);     
             $result = $legpdo->query(PartListSearchQuery($sortcol,$sortdir,$searchstr));
-
-            $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "Image"),
+            $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "URL"),
                 false, "", "parts", "", "", [], "", "", "",
                 true, "number", "Enter Quantity:" );
             
-            $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S+?.jpg)~", 
-                "<img src=\"\\1\\2\" alt=\"\\2\">",
+            $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S*.jpg)~", 
+                "<img src=\"$1$2\" alt=\"\\2\" >",
                 $tablestr);
         ?>
 
@@ -81,11 +80,10 @@
                         $result = $invpdo->query(UpdatePartQuery($num, $qty, $new));
                         if($add > 0)
                             echo "<p style=\"background-color:green;\">Added " 
-
-                                . $add . " of part #" . $num . ".</p>";
+                                . $qty . " of part #" . $num . ".</p>";
                         else
                             echo "<p style=\"background-color:green;\">Removed " 
-                                . $add . " of part #" . $num . ".</p>";
+                                . $qty . " of part #" . $num . ".</p>";
                     }
                 }
             }

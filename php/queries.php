@@ -4,6 +4,21 @@
         return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
             ORDER BY $sortcol $sortdir;";
     }
+    function OrderListDateSearchQuery($sortcol, $sortdir, $d1, $d2) {
+        return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
+            WHERE timePlaced BETWEEN \"".$d1."\" AND \"".$d2."\" 
+            ORDER BY $sortcol $sortdir;";
+    }
+    function OrderListPriceSearchQuery($sortcol, $sortdir, $p1, $p2) {
+        return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
+            WHERE totalPrice BETWEEN ".$p1." AND ".$p2." 
+            ORDER BY $sortcol $sortdir;";
+    }
+    function OrderListStatusSearchQuery($sortcol, $sortdir, $s) {
+        return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
+            WHERE status = \"".$s."\" 
+            ORDER BY $sortcol $sortdir;";
+    }
 
     function OrderPackingListQuery($sortcol, $sortdir) {
         return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
@@ -35,6 +50,7 @@
         return "SELECT number,description,price,weight,pictureURL FROM parts
             WHERE number IN (" . implode(',', $searchnumlist) . ") ORDER BY $sortcol $sortdir;";
     }
+
 
     function InventoryListQuery(array $partNums = []) {
         if(count($partNums) > 0) {
@@ -95,32 +111,5 @@
         return "SELECT custID,custName,email,custAddress FROM Orders 
             JOIN Customers ON Orders.customerID = Customers.custID
             WHERE Orders.orderNum = " . $orderNum . ";";
-    }
-
-    function CustomerSearchQuery($custName, $email, $custAddress) {
-        return "SELECT custID FROM Customers
-            WHERE custName = '$custName'
-            AND email = '$email'
-            AND custAddress = '$custAddress';";
-    }
-
-    function AddCustomerQuery($custName, $email, $custAddress) {
-        return "INSERT INTO Customers 
-            VALUES(DEFAULT, '$custName', '$email', '$custAddress');";
-    }
-
-    function AddOrderQuery($status, Float $totalPrice, Int $customerID) {
-        return "INSERT INTO Orders 
-            VALUES(DEFAULT, DEFAULT, '$status', $totalPrice, $customerID);";
-    }
-
-    function AddOrderPartsQuery($orderNum, array $partCounts) {
-        $q = "INSERT INTO OrderParts (orderNum, partNum, quantity) VALUES ";
-        foreach($partCounts as $part) {
-            $q .= "($orderNum," . $part[0] . "," . $part[1] . "),";
-        }
-
-        $q = rtrim($q, ",") . ";";
-        return $q;
     }
 ?>
