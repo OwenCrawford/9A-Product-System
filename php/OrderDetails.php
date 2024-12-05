@@ -44,19 +44,18 @@
             } else {
                 $orderNum = -1;
             }
-            
             $invresult = $invpdo->query(OrderPartsListQuery($orderNum));
             $partnums = $invresult->fetchAll(PDO::FETCH_COLUMN, 0);
-            $legresult = $partpdo->query(PartDetailQuery($partnums));
-            $partInfo = $legresult->fetchAll();
-            $invresult = $invpdo->query(OrderDetailQuery($orderNum));
-
-            $orderdetail = MergePartDetails($invresult,$partInfo);
-            //var_dump( $orderdetail);
-            echo BuildTableFromArray($orderdetail, 
-                ["Part Number", "Quantity", "Description", "Price", "Weight", "Image"]);
-
-
+            if(count($partnums) > 0) {
+                $legresult = $partpdo->query(PartDetailQuery($partnums));
+                $partInfo = $legresult->fetchAll();
+                $invresult = $invpdo->query(OrderDetailQuery($orderNum));
+                $orderdetail = MergePartDetails($invresult,$partInfo);
+                echo BuildTableFromArray($orderdetail, 
+                    ["Part Number", "Quantity", "Description", "Price", "Weight", "Image"]);
+            } else {
+                echo "<h3>Warning: no parts found in order.</h3>";
+            }
         ?>
         </p>
     </body>

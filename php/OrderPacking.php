@@ -47,19 +47,23 @@
             
             $invresult = $invpdo->query(OrderPartsListQuery($orderNum));
             $partnums = $invresult->fetchAll(PDO::FETCH_COLUMN, 0);
-            $legresult = $partpdo->query(PartDetailQuery($partnums));
-            $partInfo = $legresult->fetchAll();
-            $invresult = $invpdo->query(OrderDetailQuery($orderNum));
+            if(count($partnums) > 0) {
+                $legresult = $partpdo->query(PartDetailQuery($partnums));
+                $partInfo = $legresult->fetchAll();
+                $invresult = $invpdo->query(OrderDetailQuery($orderNum));
 
-            $orderdetail = MergePartDetails($invresult,$partInfo);
-            echo BuildTableFromArray($orderdetail, 
-                ["Part Number", "Quantity", "Description", "Price", "Weight", "Image"]);
-    
+                $orderdetail = MergePartDetails($invresult,$partInfo);
+                echo BuildTableFromArray($orderdetail, 
+                    ["Part Number", "Quantity", "Description", "Price", "Weight", "Image"]);
+            } else {
+                echo "<h3>Warning: no parts found in order.</h3>";
+            }
         ?>
         </p>
         <p>
             <h3>Invoice:</h3>
         <?php
+        if(count($partnums) > 0) {
             $subtotal = 0;
             $weight = 0;
             $invresult = $invpdo->query(InventoryListQuery($partnums));
@@ -85,11 +89,13 @@
             echo "Shipping: " . $shipping . "<br>";
             $total = $subtotal + $shipping;
             echo "Total: " . $total . "<br>";
+        }
         ?>
         </p>
         <p>
             <h3>Shipping Label:</h3>
         <?php
+        if(count($partnums) > 0) {
             $invresult = $invpdo->query(CustomerInfoQuery($orderNum));
             $custinfo = $invresult->fetch(PDO::FETCH_NUM);
             echo $custinfo[1] . "<br>";
@@ -109,6 +115,7 @@
             if(!$canFill) {
                 echo "<h3>Insufficient inventory to pack order. Please contact recieving desk.</h3>";
             }
+        }
         ?>
 
     </body>
