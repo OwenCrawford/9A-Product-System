@@ -52,6 +52,10 @@
                 $n++;
             }
         }
+        if ($n == 0) {
+            //redirect
+            header("Location: Customer.php");
+        }
     }
 
     function displayParts($numlist, &$qtylist, &$price, &$weight, &$fee, &$total) {
