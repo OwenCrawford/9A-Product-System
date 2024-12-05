@@ -58,12 +58,16 @@ INSERT INTO Inventory VALUES(1, 11);
 INSERT INTO Inventory VALUES(2, 22);
 INSERT INTO Inventory VALUES(3, 33);
 INSERT INTO Inventory VALUES(4, 44);
+INSERT INTO Inventory VALUES(5, 10);
+INSERT INTO Inventory VALUES(6, 10);
+INSERT INTO Inventory VALUES(7, 10);
+INSERT INTO Inventory VALUES(8, 10);
 
 INSERT INTO Customers VALUES(1, "Susan", "susan@gmail.com", "123 Main St, Dekalb, Illinois" );
 INSERT INTO Customers VALUES(2, "Bob", "bob@gmail.com", "321 First St, Chicago, Illinois" );
 INSERT INTO Customers VALUES(3, "RealGuy McLastname", "rgmln@aol.com", "404 Old Town Rd, Anchorage, Alaska" );
 
-INSERT INTO Orders VALUES(1, DEFAULT, "placed", 111.11, 1);
+INSERT INTO Orders VALUES(1, DEFAULT, "authorized", 111.11, 1);
 INSERT INTO Orders VALUES(2, DEFAULT, "authorized", 222.22, 2);
 INSERT INTO Orders VALUES(3, DEFAULT, "shipped", 333.33, 3);
 
