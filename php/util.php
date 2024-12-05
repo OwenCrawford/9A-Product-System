@@ -17,7 +17,6 @@
       String $selectlbl = "", String $selectvar = "", String $selectpage = "",
       Bool $numentry = false, String $entryvar = "", String $entrylbl = "", 
       Array $maxnums = [], &$price=null, &$weight=null, &$qtylist=null, $qty = false) {
-
     
     //column headers
     $tablestr = "<table border=1> <tr>";
@@ -74,8 +73,8 @@
         $tablestr .= "<td>$row[$c]</td>";
       }
       if (!is_null($price) && !is_null($weight)) {
-        $price += $row[2]*$qtylist[$r];
-        $weight += $row[3]*$qtylist[$r];
+        $price += $row[2]*$qtylist[$r+1];
+        $weight += $row[3]*$qtylist[$r+1];
       }
 
       if($numentry && $entryvar != "") {
@@ -96,7 +95,7 @@
             . "\">" . $selectlbl . "</a></td>";
       }
       if($qty) {
-        $tablestr .= "<td>".$qtylist[$r]."</td>";  
+        $tablestr .= "<td>".$qtylist[$r+1]."</td>";  
       }
       $tablestr .= "</tr>";
     }
@@ -182,7 +181,6 @@
       //escape special characters
       $values[$i] = htmlspecialchars($values[$i]);
       $labels[$i] = htmlspecialchars($labels[$i]);
-      
       echo "<option ";
       //carry forward form data if applicable
       if($keepContents && key_exists($name,$source) && $source[$name] == $values[$i])
