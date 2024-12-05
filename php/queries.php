@@ -89,4 +89,21 @@
             JOIN Customers ON Orders.customerID = Customers.custID
             WHERE Orders.orderNum = " . $orderNum . ";";
     }
+
+    function CustomerSearchQuery($custName, $email, $custAddress) {
+        return "SELECT custID FROM Customers
+            WHERE custName = '$custName'
+            AND email = '$email'
+            AND custAddress = '$custAddress';";
+    }
+
+    function AddCustomerQuery($custName, $email, $custAddress) {
+        return "INSERT INTO Customers 
+            VALUES(DEFAULT, '$custName', '$email', '$custAddress');";
+    }
+
+    function AddOrderQuery($status, Float $totalPrice, Int $customerID) {
+        return "INSERT INTO Orders 
+            VALUES(DEFAULT, DEFAULT, '$status', $totalPrice, $customerID);";
+    }
 ?>
