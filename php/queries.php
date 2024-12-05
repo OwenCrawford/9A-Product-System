@@ -36,9 +36,11 @@
             WHERE number IN (" . implode(',', $searchnumlist) . ") ORDER BY $sortcol $sortdir;";
     }
 
-    function InventoryListQuery($partNum = -1) {
-        if($partNum >= 0)
-            return "SELECT * FROM Inventory WHERE partNum = $partNum;";
+    function InventoryListQuery(array $partNums = []) {
+        if(count($partNums) > 0) {
+            return "SELECT * FROM Inventory 
+                WHERE partNum IN (" . implode(',', $partNums) . ");";
+        }
         else
             return "SELECT * FROM Inventory;";
     }
@@ -50,7 +52,12 @@
             return "INSERT INTO Inventory VALUES($partNum, $quantity);";
         else
             return "UPDATE Inventory SET quantity = $quantity
-                        WHERE partNum = '$partNum';";
+                WHERE partNum = '$partNum';";
+    }
+
+    function RemovePartQuery($partNum, $quantity) {
+        return "UPDATE Inventory SET quantity = quantity - $quantity
+            WHERE partNum = '$partNum';";
     }
 
     function OrderPartsListQuery($orderNum) {

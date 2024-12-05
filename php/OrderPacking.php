@@ -52,10 +52,9 @@
             $invresult = $invpdo->query(OrderDetailQuery($orderNum));
 
             $orderdetail = MergePartDetails($invresult,$partInfo);
-            //var_dump( $orderdetail);
             echo BuildTableFromArray($orderdetail, 
                 ["Part Number", "Quantity", "Description", "Price", "Weight", "Image"]);
-     
+    
         ?>
         </p>
         <p>
@@ -63,7 +62,13 @@
         <?php
             $subtotal = 0;
             $weight = 0;
+            $invresult = $invpdo->query(InventoryListQuery($partnums));
+            $invlist = $invresult->fetchAll(PDO::FETCH_NUM);
+            $canFill = true;
             foreach($orderdetail as $part) {
+                $onHand = MatchFirstElement($invlist, $part[0]);
+                if(!$onHand || $onHand[1] < $part[1])
+                    $canFill = false;
                 $subtotal += ($part[1] * $part[3]);
                 $weight += ($part[1] * $part[4]);
                 echo $part[2] . "(x" . $part[1] . "): " . ($part[1] * $part[3]) . "<br>";
@@ -95,10 +100,16 @@
         <p>
             <form method="POST" action="Packer.php">
                 <input type="hidden" id="orderNum" name="orderNum" value=<?php echo $orderNum; ?>>
-                <input type="submit" name="selection" value="Fill Order">
+                <input type="submit" name="selection" value="Fill Order" 
+                    <?php if(!$canFill) echo " disabled='true'"; ?> >
                 <input type="submit" name="selection" value="Cancel">
             </form>
         </p>
+        <?php
+            if(!$canFill) {
+                echo "<h3>Insufficient inventory to pack order. Please contact recieving desk.</h3>";
+            }
+        ?>
 
     </body>
 </html>
