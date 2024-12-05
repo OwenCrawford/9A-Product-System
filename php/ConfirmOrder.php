@@ -52,20 +52,20 @@
             } catch(PDOexception $e) {
                 echo "Could not connect to database: " . $e->getMessage() . "<br>"; 
             }
-            $result = $invpdo->query(CustomerSearchQuery($_POST["Name"], $_POST["Email"], $_POST["Address"]));
-            if($result->rowCount() > 0) {
+            $invresult = $invpdo->query(CustomerSearchQuery($_POST["Name"], $_POST["Email"], $_POST["Address"]));
+            if($invresult->rowCount() > 0) {
                 //existing customer
-                $custID = ($result->fetch(PDO::FETCH_NUM))[0];
-                $result->closeCursor();
+                $custID = ($invresult->fetch(PDO::FETCH_NUM))[0];
+                $invresult->closeCursor();
             } else {
                 //new customer
-                $result = $invpdo->query(AddCustomerQuery($_POST["Name"], $_POST["Email"], $_POST["Address"]));
+                $invresult = $invpdo->query(AddCustomerQuery($_POST["Name"], $_POST["Email"], $_POST["Address"]));
                 $custID = $invpdo->lastInsertID();
-                $result->closeCursor();
+                $resuinvresultlt->closeCursor();
             }
-            $result = $invpdo->query(AddOrderQuery('authorized', $_POST["Amount"], $custID));
+            $invresult = $invpdo->query(AddOrderQuery('authorized', $_POST["Amount"], $custID));
             $orderID = $invpdo->lastInsertID();
-            $result->closeCursor();
+            $invresult->closeCursor();
 
             echo "<h2>Order successfully completed. Thank you for shopping at Bob's Auto Parts!</h2>";
             echo "<h3>Your order is #$orderID</h3>";
@@ -85,14 +85,14 @@
         }
         ?>
     <?php 
-    /*
+    
         if (!array_key_exists('errors', $result)) {
           echo "<h3>Total Price: $" . $_POST["Amount"]."</h3>";
           echo "<h3>Name: ". $_POST["Name"] ."</h3>";
           echo "<h3>Email: ". $_POST["Email"]."</h3>";
           echo "<h3>Auth: ". $result["authorization"]."</h3>";
         }
-          */
+    
     ?>
     <form method='POST' action='Customer.php'>
         <input type="submit" name="Back" value="Back To Customer Page" />
