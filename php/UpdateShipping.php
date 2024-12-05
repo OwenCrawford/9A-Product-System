@@ -58,7 +58,6 @@
                 } else if($valid && key_exists($b . "_chg", $_POST)) {
                     //number_format fixes bug where 5 is not accepted by sql but 5.00 is
                     $updates[] = [$b, $_POST[$b . "_cut"], number_format($_POST[$b . "_chg"],2)];
-                    print_r($updates);
                     $prevcut = $_POST[$b . "_cut"];
                 }
             }
