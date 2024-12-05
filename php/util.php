@@ -74,8 +74,8 @@
         $tablestr .= "<td>$row[$c]</td>";
       }
       if (!is_null($price) && !is_null($weight)) {
-        $price += $row[2]*$qtylist[$r+1];
-        $weight += $row[3]*$qtylist[$r+1];
+        $price += $row[2]*$qtylist[$r];
+        $weight += $row[3]*$qtylist[$r];
       }
 
       if($numentry && $entryvar != "") {
@@ -96,7 +96,7 @@
             . "\">" . $selectlbl . "</a></td>";
       }
       if($qty) {
-        $tablestr .= "<td>".$qtylist[$r+1]."</td>";  
+        $tablestr .= "<td>".$qtylist[$r]."</td>";  
       }
       $tablestr .= "</tr>";
     }

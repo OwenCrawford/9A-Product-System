@@ -106,4 +106,14 @@
         return "INSERT INTO Orders 
             VALUES(DEFAULT, DEFAULT, '$status', $totalPrice, $customerID);";
     }
+
+    function AddOrderPartsQuery($orderNum, array $partCounts) {
+        $q = "INSERT INTO OrderParts (orderNum, partNum, quantity) VALUES ";
+        foreach($partCounts as $part) {
+            $q .= "($orderNum," . $part[0] . "," . $part[1] . "),";
+        }
+
+        $q = rtrim($q, ",") . ";";
+        return $q;
+    }
 ?>

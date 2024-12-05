@@ -19,6 +19,12 @@
 
     <body>
         <?php
+        try {
+            $invpdo = new PDO($invdbDsn, $invdbUser, $invdbPass);
+        } catch(PDOexception $e) {
+            echo "Could not connect to database: " . $e->getMessage() . "<br>"; 
+        }
+
         $url = 'http://blitz.cs.niu.edu/CreditCard/';
         $expdate = $_POST["ExpDate"];
         //$expdate = DateTime::createFromFormat("Y-m", $expdate)->format("m/Y");
@@ -47,11 +53,6 @@
         if (array_key_exists('errors', $result)) {
             echo "<h2>Error confirming your order: ".$result["errors"][0]."</h1>";
         } else {
-            try {
-                $invpdo = new PDO($invdbDsn, $invdbUser, $invdbPass);
-            } catch(PDOexception $e) {
-                echo "Could not connect to database: " . $e->getMessage() . "<br>"; 
-            }
             $invresult = $invpdo->query(CustomerSearchQuery($_POST["Name"], $_POST["Email"], $_POST["Address"]));
             if($invresult->rowCount() > 0) {
                 //existing customer
@@ -66,6 +67,9 @@
             $invresult = $invpdo->query(AddOrderQuery('authorized', $_POST["Amount"], $custID));
             $orderID = $invpdo->lastInsertID();
             $invresult->closeCursor();
+
+            $partCounts = getPartCounts();
+            $invresult = $invpdo->query(AddOrderPartsQuery($orderID, $partCounts));
 
             echo "<h2>Order successfully completed. Thank you for shopping at Bob's Auto Parts!</h2>";
             echo "<h3>Your order is #$orderID</h3>";
@@ -83,7 +87,21 @@
 
             return $randomString;
         }
+
+        function getPartCounts() {
+            $partCounts = [];
+            $keys = array_keys($_POST);
+            foreach($keys as $k) {
+                if(preg_match("~^part_(\d+)_qty$~", $k) && $_POST[$k] != 0) {
+                    $num = preg_replace("~^part_(\d+)_qty$~", "\\1", $k);
+                    $qty = $_POST[$k];
+                    $partCounts[] = [$num, $qty];
+                }
+            }
+            return $partCounts;
+        }
         ?>
+
     <?php 
     
         if (!array_key_exists('errors', $result)) {
