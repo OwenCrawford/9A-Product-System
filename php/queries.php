@@ -112,4 +112,24 @@
             JOIN Customers ON Orders.customerID = Customers.custID
             WHERE Orders.orderNum = " . $orderNum . ";";
     }
+
+    function AddCustomerQuery($custName, $email, $custAddress) {
+        return "INSERT INTO Customers 
+            VALUES(DEFAULT, '$custName', '$email', '$custAddress');";
+    }
+
+    function AddOrderQuery($status, Float $totalPrice, Int $customerID) {
+        return "INSERT INTO Orders 
+            VALUES(DEFAULT, DEFAULT, '$status', $totalPrice, $customerID);";
+    }
+
+    function AddOrderPartsQuery($orderNum, array $partCounts) {
+        $q = "INSERT INTO OrderParts (orderNum, partNum, quantity) VALUES ";
+        foreach($partCounts as $part) {
+            $q .= "($orderNum," . $part[0] . "," . $part[1] . "),";
+        }
+
+        $q = rtrim($q, ",") . ";";
+        return $q;
+    }
 ?>
