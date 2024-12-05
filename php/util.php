@@ -14,7 +14,10 @@
   function BuildTable(PDOStatement $result, array $colnames = [], 
       Bool $sortable = false, String $pageadr = "", String $tablename = "t", 
       String $sortcol = "", String $sortdir = "ASC", array $sortablecols = [],
-      String $selectlbl = "", String $selectvar = "", String $selectpage = "") {
+      String $selectlbl = "", String $selectvar = "", String $selectpage = "",
+      Bool $numentry = false, String $entryvar = "", String $entrylbl = "", 
+      Array $maxnums = [], &$price=null, &$weight=null, &$qtylist=null, $qty = false) {
+
     
     //column headers
     $tablestr = "<table border=1> <tr>";
@@ -50,6 +53,12 @@
         $selectcol = $c;
       }
     }
+    if ($qtylist != "") {
+      $tablestr .= "<th>Quantity</th>";
+    }
+    if($numentry && $entryvar != "") {
+      $tablestr .= "<th>" . $entrylbl . "</th>";
+    }
     if($selectlbl != "") {
       $tablestr .= "<th></th>";
     }
@@ -64,6 +73,21 @@
         if($c != $selectcol)
         $tablestr .= "<td>$row[$c]</td>";
       }
+      if (!is_null($price) && !is_null($weight)) {
+        $price += $row[2]*$qtylist[$r];
+        $weight += $row[3]*$qtylist[$r];
+      }
+
+      if($numentry && $entryvar != "") {
+        $tablestr .= "<td><input type=\"number\" name=\"" 
+          . $entryvar . "_" . $row[$entryvar] 
+          . "\" value=\"0\" step=\"1\" min=\"0\"";
+        if(count($maxnums) > $r) {
+          $tablestr .= " max=\"" . $maxnums[$r] . "\"";
+        }
+        $tablestr .= "></td>";
+      }
+
       if($selectlbl != "" && $selectcol >= 0) {
         $tablestr .= "<td><a href=\"" . $selectpage . "?";
         if($selectpage == "") 
@@ -71,8 +95,12 @@
         $tablestr .= $tablename . "_choice=" . $row[$selectvar]
             . "\">" . $selectlbl . "</a></td>";
       }
+      if($qty) {
+        $tablestr .= "<td>".$qtylist[$r]."</td>";  
+      }
       $tablestr .= "</tr>";
-    } 
+    }
+    
     $tablestr .= "</table>";
 
     return $tablestr;
@@ -186,6 +214,14 @@
       //$getstr = rtrim($getstr, "&");
     
     return $getstr;
+  }
+
+  function FlattenArray(array $arr) {
+    $newarr = [];
+    foreach($arr as $e) {
+      $newarr[$e[0]] = $e[1];
+    }
+    return $newarr;
   }
 
   

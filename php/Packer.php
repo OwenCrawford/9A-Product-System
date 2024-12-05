@@ -29,8 +29,15 @@
                 echo "Could not connect to database: " . $e->getMessage() . "<br>"; 
             }
 
-            if ($_SERVER["REQUEST_METHOD"] == "POST" && key_exists("selection",$_POST) ) {
+            if ($_SERVER["REQUEST_METHOD"] == "POST" && key_exists("selection",$_POST) && $_POST["selection"] == "Fill Order") {
                 $result = $invpdo->query(UpdateOrderStatusQuery($_POST["orderNum"], "shipped"));
+                $result->closeCursor();
+                $result = $invpdo->query(OrderDetailQuery($_POST["orderNum"]));
+                $partlist = $result->fetchAll(PDO::FETCH_NUM);
+                foreach($partlist as $part) {
+                    $result = $invpdo->query(RemovePartQuery($part[0], $part[1]));
+                    $result->closeCursor();
+                }
                 echo "<p style=\"background-color:green;\">Order #" . $_POST["orderNum"] . " status updated.</p>";
             }
         ?>
