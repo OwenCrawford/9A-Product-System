@@ -133,7 +133,7 @@
       $tablestr .= "</tr>";
     } 
     $tablestr .= "</table>";
-    $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S*.jpg)~", 
+    $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S+?.jpg)~", 
         "<img src=\"$1$2\" alt=\"\\2\" >",
         $tablestr);
     
