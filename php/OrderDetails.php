@@ -10,6 +10,8 @@
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
+
+            //Include helper functions and login info
             include "dblogin.php"; 
             include "util.php";
             include "queries.php";
@@ -44,13 +46,20 @@
             } else {
                 $orderNum = -1;
             }
+
+            //fetch list of parts in order
             $invresult = $invpdo->query(OrderPartsListQuery($orderNum));
             $partnums = $invresult->fetchAll(PDO::FETCH_COLUMN, 0);
             if(count($partnums) > 0) {
+                //fetch corresponding info from legacy DB
                 $legresult = $partpdo->query(PartDetailQuery($partnums));
                 $partInfo = $legresult->fetchAll();
+
+                //merge the two into one array
                 $invresult = $invpdo->query(OrderDetailQuery($orderNum));
                 $orderdetail = MergePartDetails($invresult,$partInfo);
+
+                //display the resulting table
                 echo BuildTableFromArray($orderdetail, 
                     ["Part Number", "Quantity", "Description", "Price", "Weight", "Image"]);
             } else {

@@ -1,5 +1,6 @@
 <?php
-   
+  
+  //call BuildTable and print the result
   function PrintTable(PDOStatement $result, array $colnames = [], 
     Bool $sortable = false, String $pageadr = "", String $tablename = "t", 
     String $sortcol = "", String $sortdir = "ASC", array $sortablecols = [],
@@ -10,7 +11,7 @@
 
     }
 
-  //print a nice table from a query result
+  //create a nice table from a query result
   function BuildTable(PDOStatement $result, array $colnames = [], 
       Bool $sortable = false, String $pageadr = "", String $tablename = "t", 
       String $sortcol = "", String $sortdir = "ASC", array $sortablecols = [],
@@ -106,6 +107,7 @@
     return $tablestr;
   }
 
+  //create a nice table from 2D array
   function BuildTableFromArray(array $array, array $colnames) {
     $tablestr = "<table border=1> <tr>";
     //$a = array_values($array);
@@ -133,14 +135,15 @@
       $tablestr .= "</tr>";
     } 
     $tablestr .= "</table>";
-    $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S*.jpg)~", 
+    $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S+?.jpg)~", 
         "<img src=\"$1$2\" alt=\"\\2\" >",
         $tablestr);
     
     return $tablestr;
-    
   }
 
+  //search a list of 2-element arrays, returning the
+  //first pair with a first element matching $val
   function MatchFirstElement(array $arr, $val) {
     foreach($arr as $r) {
       if(count($r) > 0 && $r[0] == $val)
@@ -149,6 +152,9 @@
     return false;
   }
 
+  //merge a query of parts with their corresponding info
+  //from the legacy database.
+  //if it were all in one database, we could just use joins...
   function MergePartDetails(PDOStatement $result, array $partinfo) {
     $merged = [];
     for($r = 0; $r < $result->rowCount(); $r++) {
@@ -189,8 +195,7 @@
         echo "selected ";
       echo "value=\"$values[$i]\">$labels[$i]</option>";
     }
-    echo "</select>";
-    
+    echo "</select>";  
   }
   
   //get current sort parameters, if they exist
@@ -203,19 +208,19 @@
     }
   }
   
+  //concatenate all values in $_GET as a string
+  //skipping any values in $ignore
   function GetToString(array $ignore = []) {
     $getstr = "";
     foreach($_GET as $key => $val) {
       if(!in_array($key, $ignore))
         $getstr = $getstr . $key . "=" . $val . "&";
     }
-    
-    //if(strlen($getstr) > 0)
-      //$getstr = rtrim($getstr, "&");
-    
     return $getstr;
   }
 
+  //turn a 2d array of key-value pairs
+  //into a 1d array
   function FlattenArray(array $arr) {
     $newarr = [];
     foreach($arr as $e) {

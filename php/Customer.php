@@ -30,54 +30,32 @@
     </head>
     
     <body>
-        <h1>Bob's Auto Parts</h1>
+        <h1>Welcome to Bob's Auto Parts</h1>
+        <form method="POST" action="Main.php">
+            <input type="submit" value="Back" class="button button1">
+        </form>
+
         <?php
+            //get search & sort params, if they exist
             $sortdir = "ASC";
             $sortcol = "number";
             $searchstr = "";
             if(key_exists("searchstr", $_POST))
-                $searchstr = $_POST["searchstr"];
-            //GetSortParams("parts", $sortcol, $sortdir);
-            //var_dump($_POST);     
+                $searchstr = $_POST["searchstr"]; 
+
+            //fetch list of parts
             $result = $legpdo->query(PartListSearchQuery($sortcol,$sortdir,$searchstr));
-            $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "URL"),
+            $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "Image"),
                 false, "", "parts", "", "", [], "", "", "",
                 true, "number", "Enter Quantity:" );
             
-            $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S*.jpg)~", 
+            //replace image URLs with an <img> element
+            $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S+?.jpg)~", 
                 "<img src=\"$1$2\" alt=\"\\2\" >",
                 $tablestr);
         ?>
 
-        <?php
-            if(key_exists("add", $_POST)) {
-                $keys = array_keys($_POST);
-                $invlist = $invpdo->query(InventoryListQuery());
-                $invlist = $invlist->fetchAll(PDO::FETCH_NUM);
-                $invlist = FlattenArray($invlist);
-
-                foreach($keys as $k) {
-                    if(preg_match("~number_\d+~", $k) && $_POST[$k] != 0) {
-                        $num = preg_replace("~number_(\d+)~", "\\1", $k);
-                        $add = 0 + $_POST[$k];
-                        $qty = $add;
-                        $new = true;
-                        if(key_exists($num, $invlist)) {
-                            $qty += $invlist[$num];
-                            $new = false;
-                        }
-                        $result = $invpdo->query(UpdatePartQuery($num, $qty, $new));
-                        if($add > 0)
-                            echo "<p style=\"background-color:green;\">Added " 
-                                . $qty . " of part #" . $num . ".</p>";
-                        else
-                            echo "<p style=\"background-color:green;\">Removed " 
-                                . $qty . " of part #" . $num . ".</p>";
-                    }
-                }
-            }
-        ?>
-
+        <!-- display the table with a submit button -->
         <form method="post" action="Cart.php">
             <input type="submit" name="Cart" value="Add to cart" />
             <p><?php echo $tablestr; ?></p>

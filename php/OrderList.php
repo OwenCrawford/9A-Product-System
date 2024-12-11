@@ -10,6 +10,8 @@
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
+
+            //Include helper functions and login info
             include "dblogin.php"; 
             include "util.php";
             include "queries.php";
@@ -36,7 +38,8 @@
 
         <p>
         <h3>Order List:</h3>
-
+        
+        <!-- search fields -->
         <form method="POST" action="OrderList.php">
             <p>
             <label for="datesearch1">Search by date range:</label>
@@ -66,6 +69,7 @@
         </form><br>
 
         <?php
+            //fetch sort & search params, if they exist
             $sortdir = "DESC";
             $sortcol = "timePlaced";
             GetSortParams("orders", $sortcol, $sortdir);
@@ -77,11 +81,14 @@
             } else if (exists("statussearch")) {
                 $q = OrderListStatusSearchQuery($sortcol, $sortdir, $_POST["statussearch"]);
             }
+
+            //display found parts
             $result = $invpdo->query($q);
             PrintTable($result, array("Order Number","Time Placed","Order Status","Price"),
                 true, "Admin.php", "orders", 
                 $sortcol, $sortdir, array("Order Number","Time Placed","Order Status","Price"), 
                 "View Details", "orderNum", "OrderDetails.php" );
+
             function exists($key) {
                 return key_exists($key, $_POST) && $_POST[$key] != "";
             }

@@ -16,6 +16,9 @@
     
     <body>
         <h1>Welcome, Administrator!</h1>
+        <form method="POST" action="Main.php">
+            <input type="submit" value="Back" class="button button1">
+        </form>
 
         <form method="POST" action="UpdateShipping.php">
         <input type="submit" value="Shipping Charges" class="button button1">

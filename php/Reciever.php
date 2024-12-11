@@ -10,6 +10,8 @@
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
+
+            //include common files
             include "dblogin.php"; 
             include "util.php";
             include "queries.php";
@@ -18,6 +20,9 @@
     
     <body>
         <h1>Welcome, Employee!</h1>
+        <form method="POST" action="Main.php">
+            <input type="submit" value="Back" class="button button1">
+        </form>
 
         <?php
             //initialize database connection
@@ -33,7 +38,8 @@
 
         <p>
         <h3>Part List:</h3>
-
+        
+        <!-- search box -->
         <form method="POST" action="Reciever.php">
             <label for="searchstr">Search part number or description:</label>
             <input type="text" id="searchstr" name="searchstr"
@@ -42,20 +48,21 @@
             <input type="submit" value="Search">
         </form><br>
 
+        <!-- table of parts -->
         <?php
             $sortdir = "ASC";
             $sortcol = "number";
             $searchstr = "";
             if(key_exists("searchstr", $_POST))
                 $searchstr = $_POST["searchstr"];
-            //GetSortParams("parts", $sortcol, $sortdir);
-            //var_dump($_POST);     
+  
             $result = $legpdo->query(PartListSearchQuery($sortcol,$sortdir,$searchstr));
 
             $tablestr = BuildTable($result, array("Part Number","Description","Price", "Weight", "Image"),
                 false, "", "parts", "", "", [], "", "", "",
                 true, "number", "Enter Quantity:" );
             
+            //replace image URLs with <img> element
             $tablestr = preg_replace( "~(http://blitz.cs.niu.edu/pics/)(\S+?.jpg)~", 
                 "<img src=\"\\1\\2\" alt=\"\\2\">",
                 $tablestr);
@@ -63,6 +70,7 @@
 
         <?php
             if(key_exists("add", $_POST)) {
+                //add selected parts to inventory
                 $keys = array_keys($_POST);
                 $invlist = $invpdo->query(InventoryListQuery());
                 $invlist = $invlist->fetchAll(PDO::FETCH_NUM);
@@ -91,6 +99,7 @@
             }
         ?>
 
+        <!-- submit button -->
         <form method="POST" action="Reciever.php">
             <input type="submit" name="add" value="Add to Inventory">
             <p><?php echo $tablestr; ?></p>
