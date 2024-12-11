@@ -4,16 +4,19 @@
         return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
             ORDER BY $sortcol $sortdir;";
     }
+
     function OrderListDateSearchQuery($sortcol, $sortdir, $d1, $d2) {
         return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
             WHERE timePlaced BETWEEN \"".$d1."\" AND \"".$d2."\" 
             ORDER BY $sortcol $sortdir;";
     }
+
     function OrderListPriceSearchQuery($sortcol, $sortdir, $p1, $p2) {
         return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
             WHERE totalPrice BETWEEN ".$p1." AND ".$p2." 
             ORDER BY $sortcol $sortdir;";
     }
+    
     function OrderListStatusSearchQuery($sortcol, $sortdir, $s) {
         return "SELECT Orders.orderNum,timePlaced,status,totalPrice FROM Orders
             WHERE status = \"".$s."\" 

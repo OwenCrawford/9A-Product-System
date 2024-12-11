@@ -5,7 +5,7 @@
     Group 9A
   -->
   <head>
-    <title>Bob's Auto Parts</title>
+    <title>Admin View</title>
 
     <?php
       // style
@@ -24,7 +24,7 @@
   </head>
   
   <body>
-    <h1>Welcome to Bob's Auto Parts!</h1>
+    <h1>Welcome, Administrator!</h1>
 
     <?php
         //initialize database connection
@@ -41,13 +41,17 @@
       <input type="submit" value="BACK" class="button button1">
     </form>
 
+    <!-- If values were submitted, update the database -->
     <?php
-         if ($_SERVER["REQUEST_METHOD"] == "POST" && key_exists("updated",$_POST)) {
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && key_exists("updated",$_POST)) {
+            //fetch submitted values
             $brackets = array_keys($_POST);
             $brackets = array_values(array_filter($brackets, function(string $e) {return preg_match("~(\S+)_cut~", $e);}));
             for($b = 0; $b < count($brackets); $b++) {
                 $brackets[$b] = preg_replace("~(\S+)_cut~", "\\1", $brackets[$b]);
             }
+
+            //verify values
             $prevcut = -1;
             $valid = true;
             $updates = [];
@@ -62,14 +66,17 @@
                     $prevcut = $_POST[$b . "_cut"];
                 }
             }
+
+            //update DB
             if($valid) {
                 foreach($updates as $u)
                     $invpdo->query(UpdateShippingQuery($u));
                 echo "<p style=\"background-color:green;\">Weight brackets updated!</p>";
             }
-         }
+        }
     ?>
     
+    <!-- bracket submission form -->
     <form method="POST" action="UpdateShipping.php">
         <input type="hidden" name="updated" value=true>
         <table border=1> <tr>
@@ -78,6 +85,7 @@
             <th>Shipping Charge</th>
         </tr>
         <?php
+            //generate a row for each bracket in the database
             $chargesResult = $invpdo->query(ShippingChargeQuery());
             for($r = 0; $r < $chargesResult->rowCount(); $r++) {
                 $row = $chargesResult->fetch(PDO::FETCH_NUM);

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Bob's Warehouse</title>
+        <title>Packer View</title>
         <?php 
             //style
             include "style.html";
@@ -10,6 +10,8 @@
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
+
+            //include common files
             include "dblogin.php"; 
             include "util.php";
             include "queries.php";
@@ -18,6 +20,9 @@
     
     <body>
         <h1>Welcome, Employee!</h1>
+        <form method="POST" action="Main.php">
+            <input type="submit" value="Back" class="button button1">
+        </form>
 
         <?php
             //initialize database connection
@@ -29,6 +34,7 @@
                 echo "Could not connect to database: " . $e->getMessage() . "<br>"; 
             }
 
+            //update a packed order's status
             if ($_SERVER["REQUEST_METHOD"] == "POST" && key_exists("selection",$_POST) && $_POST["selection"] == "Fill Order") {
                 $result = $invpdo->query(UpdateOrderStatusQuery($_POST["orderNum"], "shipped"));
                 $result->closeCursor();
@@ -49,6 +55,7 @@
             $sortcol = "timePlaced";
             GetSortParams("orders", $sortcol, $sortdir);
             
+            //display sortable list of orders
             $result = $invpdo->query(OrderPackingListQuery($sortcol,$sortdir));
             PrintTable($result, array("Order Number","Time Placed","Order Status","Price"),
                 true, "Packer.php", "orders", 

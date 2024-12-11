@@ -52,8 +52,7 @@ CREATE TABLE ShippingCharges (
     charge DECIMAL(4,2)
 );
 
-
-
+/* example data */
 INSERT INTO Inventory VALUES(1, 11);
 INSERT INTO Inventory VALUES(2, 22);
 INSERT INTO Inventory VALUES(3, 33);

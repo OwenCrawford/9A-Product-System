@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Bob's Warehouse</title>
+        <title>Packer View</title>
         <?php 
             //style
             include "style.html";
@@ -10,6 +10,8 @@
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
+
+            //include common files
             include "dblogin.php"; 
             include "util.php";
             include "queries.php";
@@ -39,12 +41,14 @@
         <h3>Packing List:</h3>
         <?php
             
+            //fetch order to display
             if(key_exists("orders_choice",$_GET)) {
                 $orderNum = $_GET["orders_choice"];
             } else {
                 $orderNum = -1;
             }
             
+            //display order info
             $invresult = $invpdo->query(OrderPartsListQuery($orderNum));
             $partnums = $invresult->fetchAll(PDO::FETCH_COLUMN, 0);
             if(count($partnums) > 0) {
@@ -63,6 +67,8 @@
         <p>
             <h3>Invoice:</h3>
         <?php
+        //calculate shipping and total charge
+        //check if sufficient parts are available to pack
         if(count($partnums) > 0) {
             $subtotal = 0;
             $weight = 0;
@@ -95,6 +101,7 @@
         <p>
             <h3>Shipping Label:</h3>
         <?php
+        //display customer information
         if(count($partnums) > 0) {
             $invresult = $invpdo->query(CustomerInfoQuery($orderNum));
             $custinfo = $invresult->fetch(PDO::FETCH_NUM);
@@ -103,6 +110,8 @@
             echo "Confirmation will be sent to: " . $custinfo[2] . "<br>";
         ?>
         </p>
+
+        <!-- confirmation buttons -->
         <p>
             <form method="POST" action="Packer.php">
                 <input type="hidden" id="orderNum" name="orderNum" value=<?php echo $orderNum; ?>>
